@@ -3,5 +3,5 @@ A Django-powered website using python and jQuery for giving information about da
 
 ## Software Requirements
 The following software dependencies are required for this project:
--Python 3
--Django
+- Python 3
+- Django
