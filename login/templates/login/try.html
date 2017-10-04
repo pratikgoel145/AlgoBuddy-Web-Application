@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Standard Meta -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <!-- Site Properties -->
+  <title>Algo Buddy</title>
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/semantic.min.css' %}">
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/semantic.min.js' %}"></script>
+
+  <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}"/>
+
+  <style type="text/css">
+
+      .hidden.menu {
+        display: none;
+      }
+
+      .masthead.segment {
+        min-height: 700px;
+        padding: 1em 0em;
+      }
+      .masthead .logo.item img {
+        margin-right: 1em;
+      }
+      .masthead .ui.menu .ui.button {
+        margin-left: 0.5em;
+      }
+      .masthead h1.ui.header {
+        margin-top: 3em;
+        margin-bottom: 0em;
+        font-size: 4em;
+        font-weight: normal;
+      }
+      .masthead h2 {
+        font-size: 1.7em;
+        font-weight: normal;
+      }
+
+      .ui.vertical.stripe {
+        padding: 8em 0em;
+      }
+      .ui.vertical.stripe h3 {
+        font-size: 2em;
+      }
+      .ui.vertical.stripe .button + h3,
+      .ui.vertical.stripe p + h3 {
+        margin-top: 3em;
+      }
+      .ui.vertical.stripe .floated.image {
+        clear: both;
+      }
+      .ui.vertical.stripe p {
+        font-size: 1.33em;
+      }
+      .ui.vertical.stripe .horizontal.divider {
+        margin: 3em 0em;
+      }
+
+      .quote.stripe.segment {
+        padding: 0em;
+      }
+      .quote.stripe.segment .grid .column {
+        padding-top: 5em;
+        padding-bottom: 5em;
+      }
+
+      .footer.segment {
+        padding: 5em 0em;
+      }
+
+      .ui.small.modal{
+        padding: 1em 2em;
+      }
+
+      .secondary.pointing.menu .toc.item {
+        display: none;
+      }
+
+      @media only screen and (max-width: 700px) {
+        .ui.fixed.menu {
+          display: none !important;
+        }
+        .secondary.pointing.menu .item,
+        .secondary.pointing.menu .menu {
+          display: none;
+        }
+        .secondary.pointing.menu .toc.item {
+          display: block;
+        }
+        .masthead.segment {
+          min-height: 350px;
+        }
+        .masthead h1.ui.header {
+          font-size: 2em;
+          margin-top: 1.5em;
+        }
+        .masthead h2 {
+          margin-top: 0.5em;
+          font-size: 1.5em;
+        }
+      }
+
+
+    </style>
+  <script>
+    $(document)
+      .ready(function() {
+        // fix menu when passed
+        $('.ui.large.secondary.inverted.pointing.menu')
+          .visibility({
+            once: false,
+            onBottomPassed: function() {
+              $('.fixed.menu').transition('fade in');
+            },
+            onBottomPassedReverse: function() {
+              $('.fixed.menu').transition('fade out');
+            }
+          })
+        ;
+
+        // create sidebar and attach to menu open
+        $('.ui.sidebar')
+          .sidebar('attach events', '.toc.item')
+        ;
+
+        // toggling the sidebar
+        $('#homeSidebar, #aboutUsSidebar, #loginSidebar, #signUpSidebar')
+          .on('click', function(){
+            $('#sidebar').sidebar('toggle');
+          })
+        ;
+
+        //displaying login modal
+        $('#loginNav, #loginFollow, #loginSidebar')
+          .on('click', function(){
+            // making login tab active
+            document.getElementById('loginTab').className = 'active item';
+            document.getElementById('loginSegment').className = 'ui bottom attached active tab segment';
+            // making signUp tab inactive
+            document.getElementById('signUpTab').className = 'item';
+            document.getElementById('signUpSegment').className = 'ui bottom attached tab segment';
+            // reseting the form
+            $('#loginForm').form('reset');
+            // displaying the modal
+            $('#modal').modal('show');
+          })
+        ;
+
+        //displaying signup modal
+        $('#signUpNav, #signUpFollow, #signUpSidebar, #getStarted')
+          .on('click', function(){
+            // making login tab inactive
+            document.getElementById('loginTab').className = 'item';
+            document.getElementById('loginSegment').className = 'ui bottom attached tab segment';
+            // making signUp tab active
+            document.getElementById('signUpTab').className = 'active item';
+            document.getElementById('signUpSegment').className = 'ui bottom attached active tab segment';
+            // reseting the form
+            $('#signUpForm').form('reset');
+            // displaying the modal
+            $('#modal').modal('show');
+          })
+        ;
+
+        // scrolling motion
+        $("#homeFollow")
+          .click(function(){
+            $('html, body').animate({
+              'scrollTop' : $("#home").position().top
+            });
+          })
+        ;
+        $("#aboutUsNav, #aboutUsSidebar, #aboutUsFollow")
+          .on('click', function(){
+            $('html, body').animate({
+              'scrollTop' : $("#aboutUs").position().top + 1
+            });
+          })
+        ;
+
+        // blurring cards
+        $('.special.cards .image')
+          .dimmer({
+            on: 'hover'
+          })
+        ;
+
+        // login/signup
+        $('.menu .item')
+          .tab()
+        ;
+
+        // Log in Form validation
+        $('#loginForm')
+          .form({
+            fields: {
+              username: {
+                identifier: 'username',
+                rules: [
+                  {
+                    type   : 'empty',
+                    prompt : 'Please enter your username!'
+                  },
+                  {
+                    type   : 'regExp[/^[a-z]+[A-Za-z0-9_]*$/]',
+                    prompt : 'Invalid username!'
+                  }
+
+                ]
+              },
+              password: {
+                identifier: 'password',
+                rules: [
+                  {
+                    type: 'minLength[6]',
+                    prompt: 'Password must be at least 6 characters in length'
+                  }
+                ]
+              },
+            },
+            inline: true,
+            on: 'blur',
+          })
+
+        // Sign Up Form validation
+        $('#signUpForm')
+          .form({
+            fields: {
+              first_name: {
+                identifier: 'first_name',
+                rules: [
+                  {
+                    type   : 'empty',
+                    prompt : 'First name can not be empty'
+                  },
+                  {
+                    type   : 'regExp[/^[a-zA-Z]+$/]',
+                    prompt : 'Invalid first name!'
+                  }
+                ]
+              },
+              last_name: {
+                identifier: 'last_name',
+                rules: [
+                  {
+                    type   : 'empty',
+                    prompt : 'Last name can not be empty'
+                  },
+                  {
+                    type   : 'regExp[/^[a-zA-Z]+$/]',
+                    prompt : 'Invalid last name!'
+                  }
+                ]
+              },
+              username: {
+                identifier: 'username',
+                rules: [
+                  {
+                    type   : 'empty',
+                    prompt : 'Please enter your username!'
+                  },
+                  {
+                    type   : 'regExp[/^[a-z]+[A-Za-z0-9_]*$/]',
+                    prompt : 'Invalid username!'
+                  }
+                ]
+              },
+              password: {
+                identifier: 'password',
+                rules: [
+                  {
+                    type: 'minLength[6]',
+                    prompt: 'Password must be at least 6 characters in length'
+                  }
+                ]
+              }
+            },
+            inline: true,
+            on: 'blur',
+          })
+        ;
+
+        // giving power to message close button
+        $('.message .close')
+          .on('click', function() {
+            $(this)
+              .closest('.message')
+              .transition('fade')
+            ;
+          })
+        ;
+
+        // login error message
+        if($('#loginErrorMessage').html().length){
+          document.getElementById('loginError').className = 'ui error message';
+          $("#loginNav").trigger("click");
+        }
+
+        // sign up error message
+        if($('#signUpErrorMessage').html().length){
+          document.getElementById('signUpError').className = 'ui error message';
+          $("#signUpNav").trigger("click");
+        }
+
+      })
+
+      // changing active element to about us
+      .on('scroll', function(){
+        if($(this).scrollTop()>=$('#aboutUs').position().top){
+          document.getElementById('homeFollow').className = 'item';
+          document.getElementById('aboutUsFollow').className = 'active item';
+        }
+        else{
+          document.getElementById('homeFollow').className = 'active item';
+          document.getElementById('aboutUsFollow').className = 'item';
+        }
+      })
+    ;
+    </script>
+</head>
+<body>
+<!-- Following Menu -->
+<div class="ui large top fixed hidden menu">
+  <div class="ui container">
+    <a class="active item" id="homeFollow">Home</a>
+    <a class="item" id="aboutUsFollow">About Us</a>
+    <div class="right menu">
+      <div class="item">
+        <a class="ui button" id="loginFollow">Log in</a>
+      </div>
+      <div class="item">
+        <a class="ui primary button" id="signUpFollow">Sign Up</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Modal-->
+<div class="small ui modal" id="modal">
+  <i class="close icon"></i>
+  <div class="ui top attached tabular menu">
+    <a class="active item" data-tab="login" id="loginTab">Log in</a>
+    <a class="item" data-tab="signUp" id="signUpTab">Sign Up</a>
+  </div>
+  <div class="ui bottom attached active tab segment" data-tab="login" id="loginSegment">
+    <h2 class="ui black image header">
+      <img src="{% static 'img/logo.png' %}" class="image">
+      <div class="content">
+        Log in into your existing account!
+      </div>
+    </h2>
+    <p>
+      Please fill the following details to access your account.
+    </p>
+    <div class="ui hidden error message" id="loginError">
+      <i class="close icon" id="loginErrorClose"></i>
+      <div class="header" id="loginErrorMessage">{{ lmessage }}</div>
+    </div>
+    <form action="/login/login/" method="post" name="loginform" class="ui form segment" id="loginForm">{% csrf_token %}
+      <div class="ui required field">
+        <label>Username</label>
+        {{ Lform.username }}
+      </div>
+      <div class="ui required field">
+        <label>Password</label>
+        {{ Lform.password }}
+      </div>
+      <input  class="ui fluid large black button" type="submit" name="button" value="Login">
+    </form>
+
+  </div>
+  <div class="ui bottom attached tab segment" data-tab="signUp" id="signUpSegment">
+    <h2 class="ui black image header">
+      <img src="{% static 'img/logo.png' %}" class="image">
+      <div class="content">
+        Sign Up for a new account!
+      </div>
+    </h2>
+    <p>
+      Please fill the information below to create your account.
+    </p>
+    <div class="ui hidden error message" id="signUpError">
+      <i class="close icon" id="signUpErrorClose"></i>
+      <div class="header" id="signUpErrorMessage">{{ smessage }}</div>
+    </div>
+    <form class="ui form segment" id="signUpForm" action="/login/register/" method="POST">{% csrf_token %}
+      <div class="ui required field">
+        <label>Username</label>
+        {{ Sform.username }}
+      </div>
+      <div class="ui required field">
+        <label>Name</label>
+        <div class="two fields">
+          <div class="ui required field">
+            {{ Sform.first_name }}
+          </div>
+          <div class="ui required field">
+            {{ Sform.last_name }}
+          </div>
+        </div>
+      </div>
+      <div class="ui required field">
+        <label>Password</label>
+        {{ Sform.password }}
+      </div>
+      <input  class="ui fluid large black button" type="submit" name="button" value="Sign up">
+    </form>
+  </div>
+</div>
+
+<!-- Sidebar Menu -->
+<div class="ui vertical inverted sidebar menu" id="sidebar">
+  <a class="active item" id="homeSidebar">Home</a>
+  <a class="item" id="aboutUsSidebar">About Us</a>
+  <a class="item" id="loginSidebar">Log in</a>
+  <a class="item" id="signUpSidebar">Sign Up</a>
+</div>
+
+
+<!-- Page Contents -->
+<div class="pusher" id="home">
+  <div class="ui inverted vertical masthead center aligned segment">
+    <div class="ui container">
+      <div class="ui large secondary inverted pointing menu">
+        <a class="toc item">
+          <i class="sidebar icon"></i>
+        </a>
+        <a class="active item" id="homeNav">Home</a>
+        <a class="item" id="aboutUsNav">About Us</a>
+        <div class="right item">
+          <a class="ui inverted button" id="loginNav">Log in</a>
+          <a class="ui inverted button" id="signUpNav">Sign Up</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui text container">
+      <h1 class="ui inverted header">
+        Algo Buddy
+      </h1>
+      <h2>Learn whatever you want when you want to.</h2>
+      <div class="ui huge primary button" id="getStarted">Get Started!<i class="right arrow icon"></i></div>
+    </div>
+
+  </div>
+
+  <div class="ui vertical stripe segment" id="aboutUs">
+    <div class="ui center aligned text container">
+      <h1 class="ui header">About Us</h1>
+    </div>
+  </div>
+  <div class="ui centered link special cards">
+    <div class="card">
+      <div class="blurring dimmable image">
+        <div class="ui dimmer">
+          <div class="content">
+            <div class="center">
+              <div class="description">
+                <p>
+                  Pranshu is a brilliant tactician, strategist, scientist, tracker and a master of all forms of unarmed
+                  combat whose unique hybrid fighting style incorporates acrobatics and aspects of animal mimicry.
+                  He is a master planner who always thinks several steps ahead and will go to extreme measures to
+                  achieve his goals and protect the kingdom of Wakanda.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <img src="{% static 'img/pranshu.jpg' %}">
+      </div>
+      <div class="content">
+        <a class="header" href="https://github.com/pranshu1910">Pranshu</a>
+        <div class="meta">DTU/2K14/CO/084</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="blurring dimmable image">
+        <div class="ui dimmer">
+          <div class="content">
+            <div class="center">
+              <div class="description">
+                <p>
+                  Pratik is an accomplished scientist, inventor and photographer. He can cling to most surfaces, has
+                  superhuman strength and is roughly 15 times more agile than a regular human. The combination of his
+                  acrobatic leaps and web-slinging enables him to travel rapidly from place to place. His spider-sense
+                  provides an early warning detection system linked with his superhuman kinesthetics.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <img src="{% static 'img/pratik.jpg' %}">
+      </div>
+      <div class="content">
+        <a class="header" href="https://github.com/pratikgoel145">Pratik Goel</a>
+        <div class="meta">DTU/2K14/CO/085</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="blurring dimmable image">
+        <div class="ui dimmer">
+          <div class="content">
+            <div class="center">
+              <div class="description">
+                <p>
+                  Rajat is an eccentric self-described genius, billionaire, playboy and philanthropist and the former
+                  head of Rajat Industries. Using his own great wealth and exceptional technical knowledge, Rajat
+                  enjoyed the playboy lifestyle for many years until he joined DTU.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <img src="{% static 'img/rajat.jpg' %}">
+      </div>
+      <div class="content">
+        <a class="header" href="https://github.com/Rajat-V">Rajat Verma</a>
+        <div class="meta">DTU/2K14/CO/093</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui inverted vertical footer segment">
+    <div class="ui container">
+      <h1 class="ui centered inverted header">
+        Made with
+        <img src="{% static 'img/heart.gif' %}">
+        in DTU Library :P
+      </h1>
+    </div>
+  </div>
+</div>
+</body>
+</html>
