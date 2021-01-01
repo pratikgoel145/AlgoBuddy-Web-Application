@@ -4,12 +4,14 @@ A Django-powered website using python and jQuery for giving information about da
 ## Software Requirements
 The following software dependencies are required for this project:
 - Python 3
- - Can be downloaded from [here][py3]
+  - Can be downloaded from [here][py3]
 - [Django][dj] 1.11.29 LTS
- - Can be installed using `pip install Django==1.11.29`
+  - Can be installed using:
+    > `pip install Django==1.11.29`
 
  ## Running the website
-To run the website, simply run: `python3 manage.py runserver`
+To run the website, simply run: 
+> `python3 manage.py runserver`
 
 [py3]:https://www.python.org/downloads/
 [dj]:https://www.djangoproject.com/download/
